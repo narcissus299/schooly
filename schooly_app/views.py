@@ -8,11 +8,6 @@ from django.core.exceptions import ObjectDoesNotExist
 from schooly_app.forms import *
 from schooly_app.models import *
 
-#TODO : Templates not working -fucking Templates- 
-#the most basic thing I need to have a fucking UI
-#Oh god what am I doing with my life
-#FML I should burn this and go to sleep
-
 def index(request,auth_form=None,user_form=None):
 	if not request.user.is_authenticated():
 		auth_form = auth_form or AuthenticateForm()
@@ -21,22 +16,53 @@ def index(request,auth_form=None,user_form=None):
 		return render(request,'landing.html',{'auth_form': auth_form, 'user_form': user_form, })
 
 	else:
-
 		'''Display all classes signed up for by the user'''
 		classes = request.user.id.class_participants.all()
-		dic = dict( (i.name,i.code) for i in classes )
+		#dic = dict( (i.name,i.code) for i in classes )
 
-		return render(request, 'classes.html', dic)
+		return render(request, 'classes.html', {'classes':classes ,}) #TODO NEED TO MAKE
 
-
+@login_required
 def class_view(request, classid):
-	pass
 
+	if request.method=='POST':
+		form = PostForm(data = request.POST)
+		if form.is_valid():
+			pform = form.save(commit = False)
+			pform.user = request.user
+			pform.classroom = classid
+			pform.save()
+
+	class_room = ClassRoom.objects.get(code=classid)
+	posts = class_room.posts_in_class.all()
+	post_form = PostForm()
+
+	render(request, 'postpage.html',{'posts':posts, 'post_form':post_form ,})
+
+@login_required
 def create_class(request):
-	pass
+	
+	if request.method == 'POST':
+		form = ClassRoomForm(data= request.POST)
+		if form.is_valid():
+			cform = form.save(commit=False)
+			cform.create_code()
+			cform.save()
+			return redirect('/')
 
+	elif request.method == 'GET':
+		cform = ClassRoomForm()
+		render(request, 'createclasspage.html', {'form':cform})
+
+@login_required
 def join_class(request):
-	pass
+	if request.method == 'POST':
+		form = JoinClassForm(data = request.POST)
+		if form.is_valid():
+			classroom = ClassRoom.objects.get(code = form.code)
+			classroom.students.add(request.user)
+			return redirect('/')
+	return redirect('/')
 
 def login_view(request):
 	if request.method == 'POST':
@@ -50,7 +76,7 @@ def login_view(request):
 			return index(request, auth_form=form)
 	return redirect('/')
  
- 
+@login_required 
 def logout_view(request):
 	logout(request)
 	return redirect('/')
