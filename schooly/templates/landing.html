@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <form action="/login" method="post">{% csrf_token %}
+        {% for field in auth_form %}
+        {{ field }}
+        {% endfor %}
+        <input type="submit" id="btnLogIn" value="Log In">
+    </form>
+
+    <h1>New to Schooly?</h1>
+    <p>
+        <form action="/signup" method="post">{% csrf_token %}
+            {% for field in user_form %}
+            {{ field }}
+            {% endfor %}
+            <input type="submit" value="Create Account">
+        </form>
+    </p>
+
+{% endblock %}

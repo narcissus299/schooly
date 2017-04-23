@@ -3,13 +3,13 @@ import os
 # Django settings for ribbit project.
 
 DEBUG = True
-TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
 
 PROJECT_PATH = os.path.dirname(os.path.abspath(__file__))
+
 LOGIN_URL = '/'
 
 MANAGERS = ADMINS
@@ -107,6 +107,23 @@ ROOT_URLCONF = 'schooly.urls'
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'schooly.wsgi.application'
 
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(PROJECT_PATH, 'templates'),],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+                ],
+            'debug': DEBUG,
+        },
+    },
+]
+
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
@@ -121,7 +138,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    #'south',
+    'schooly',
     'schooly_app',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
