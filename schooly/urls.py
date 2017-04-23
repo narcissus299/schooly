@@ -22,6 +22,7 @@ urlpatterns = [
     url(r'^$', index), # root
     url(r'^class/(?P<classid>.+)$', class_view), # login
     url(r'^createclass$', create_class), # create a new class
+    url(r'^makeclass$',make_class), #make a class
     url(r'^joinclass$', join_class), # join a new class
     url(r'^login$', login_view), # login
     url(r'^logout$', logout_view), # logout

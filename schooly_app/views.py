@@ -8,6 +8,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from schooly_app.forms import *
 from schooly_app.models import *
 
+#TODO FIX THE ISSUE OF FORMS
+
 def index(request,auth_form=None,user_form=None):
 	if not request.user.is_authenticated():
 		auth_form = auth_form or AuthenticateForm()
@@ -17,10 +19,11 @@ def index(request,auth_form=None,user_form=None):
 
 	else:
 		'''Display all classes signed up for by the user'''
-		classes = request.user.id.class_participants.all()
-		#dic = dict( (i.name,i.code) for i in classes )
+		u = request.user
+		classes = u.class_participants.all()
+		jcform = JoinClassForm()
 
-		return render(request, 'classes.html', {'classes':classes ,}) #TODO NEED TO MAKE
+		return render(request, 'classes.html', {'classes':classes ,'jcform':jcform}) #TODO NEED TO MAKE
 
 @login_required
 def class_view(request, classid):
@@ -41,18 +44,20 @@ def class_view(request, classid):
 
 @login_required
 def create_class(request):
-	
+	cform = ClassRoomForm()
+	return render(request, 'createclasspage.html', {'form':cform})
+
+@login_required
+def make_class(request):
 	if request.method == 'POST':
 		form = ClassRoomForm(data= request.POST)
 		if form.is_valid():
 			cform = form.save(commit=False)
 			cform.create_code()
 			cform.save()
+			cform.students.add(request.user.id)
+			cform.save()
 			return redirect('/')
-
-	elif request.method == 'GET':
-		cform = ClassRoomForm()
-		render(request, 'createclasspage.html', {'form':cform})
 
 @login_required
 def join_class(request):
@@ -60,7 +65,7 @@ def join_class(request):
 		form = JoinClassForm(data = request.POST)
 		if form.is_valid():
 			classroom = ClassRoom.objects.get(code = form.code)
-			classroom.students.add(request.user)
+			classroom.students.add(request.user.id)
 			return redirect('/')
 	return redirect('/')
 
@@ -85,9 +90,9 @@ def signup(request):
 	user_form = UserCreateForm(data=request.POST)
 	if request.method == 'POST':
 		if user_form.is_valid():
-			username = user_form.clean_username()
-			password = user_form.clean_password2()
 			user_form.save()
+			username = user_form.cleaned_data['username']
+			password = user_form.cleaned_data['password1']
 			user = authenticate(username=username, password=password)
 			login(request, user)
 			return redirect('/')

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- TODO -->
+<!-- <form action="/joinclass" method="post">{% csrf_token %}
+        {% for field in jcform %}
+        {{ field }}
+        {% endfor %}
+        <input type="submit" id="btnLogIn" value="Join Class">
+</form> -->
+
+{%for post in posts%}
+<p>{{post}}</p>
+{%endfor%}
+
+{% endblock %}

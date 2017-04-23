@@ -58,7 +58,7 @@ class ClassRoomForm(forms.ModelForm):
  
 	class Meta:
 		model = ClassRoom
-		exclude = ('code','students')
+		exclude = ('students','code',)
 
 class PostForm(forms.ModelForm):
 	content = forms.CharField(required=True, widget=forms.widgets.Textarea(attrs={'class': 'ribbitText'}))

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <form action="/makeclass" method="post">{% csrf_token %}
+        {% for field in form %}
+        {{ field }}
+        {% endfor %}
+        <input type="submit" id="btnLogIn" value="Create Class">
+    </form>
+
+{% endblock %}
