@@ -13,16 +13,17 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url
+from django.conf.urls import url,include
 from django.contrib import admin
+from schooly_app.views import *
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
-    url(r'^$', 'schooly_app.views.index'), # root
-    url(r'^class/(?P<classid>.+)$', 'schooly_app.views.login_view'), # login
-    url(r'^createclass$', 'schooly_app.views.create_class'), # create a new class
-    url(r'^joinclass$', 'schooly_app.views.join_class'), # join a new class
-    url(r'^login$', 'schooly_app.views.login_view'), # login
-    url(r'^logout$', 'schooly_app.views.logout_view'), # logout
-    url(r'^signup$', 'schooly_app.views.signup'), # signup
+    url(r'^admin/', include(admin.site.urls)),
+    url(r'^$', index), # root
+    url(r'^class/(?P<classid>.+)$', class_view), # login
+    url(r'^createclass$', create_class), # create a new class
+    url(r'^joinclass$', join_class), # join a new class
+    url(r'^login$', login_view), # login
+    url(r'^logout$', logout_view), # logout
+    url(r'^signup$', signup), # signup
 ]

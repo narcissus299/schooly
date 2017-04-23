@@ -1,9 +1,15 @@
+from __future__ import unicode_literals
 from django.db import models
 from django.contrib.auth.models import User
 
 class ClassRoom(models.Model):
+	course = models.CharField(max_length=10)
 	name = models.CharField(max_length=50)
-	students = models.ManyToManyField(User)
+	students = models.ManyToManyField(User,related_name="class_participants")
+	code = models.CharField(max_length=256)
+
+	def create_code(self):
+		self.code = hashlib.md5(self.course+self.name).hexdigest()
 
 class Post(models.Model):
     content = models.CharField(max_length=500)
